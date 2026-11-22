@@ -10,33 +10,111 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LessonsRouteImport } from './routes/lessons'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SuralarRouteImport } from './routes/suralar'
+import { Route as TestsRouteImport } from './routes/tests'
+import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
+import { Route as LessonsLessonIdRouteImport } from './routes/lessons.$lessonId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LessonsRoute = LessonsRouteImport.update({
+  id: '/lessons',
+  path: '/lessons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuralarRoute = SuralarRouteImport.update({
+  id: '/suralar',
+  path: '/suralar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestsRoute = TestsRouteImport.update({
+  id: '/tests',
+  path: '/tests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LessonsIndexRoute = LessonsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LessonsRoute,
+} as any)
+const LessonsLessonIdRoute = LessonsLessonIdRouteImport.update({
+  id: '/$lessonId',
+  path: '/$lessonId',
+  getParentRoute: () => LessonsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/lessons': typeof LessonsRouteWithChildren
+  '/settings': typeof SettingsRoute
+  '/suralar': typeof SuralarRoute
+  '/tests': typeof TestsRoute
+  '/lessons/$lessonId': typeof LessonsLessonIdRoute
+  '/lessons/': typeof LessonsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/settings': typeof SettingsRoute
+  '/suralar': typeof SuralarRoute
+  '/tests': typeof TestsRoute
+  '/lessons/$lessonId': typeof LessonsLessonIdRoute
+  '/lessons': typeof LessonsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/lessons': typeof LessonsRouteWithChildren
+  '/settings': typeof SettingsRoute
+  '/suralar': typeof SuralarRoute
+  '/tests': typeof TestsRoute
+  '/lessons/$lessonId': typeof LessonsLessonIdRoute
+  '/lessons/': typeof LessonsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/lessons'
+    | '/settings'
+    | '/suralar'
+    | '/tests'
+    | '/lessons/$lessonId'
+    | '/lessons/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/settings'
+    | '/suralar'
+    | '/tests'
+    | '/lessons/$lessonId'
+    | '/lessons'
+  id:
+    | '__root__'
+    | '/'
+    | '/lessons'
+    | '/settings'
+    | '/suralar'
+    | '/tests'
+    | '/lessons/$lessonId'
+    | '/lessons/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LessonsRoute: typeof LessonsRouteWithChildren
+  SettingsRoute: typeof SettingsRoute
+  SuralarRoute: typeof SuralarRoute
+  TestsRoute: typeof TestsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +126,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lessons': {
+      id: '/lessons'
+      path: '/lessons'
+      fullPath: '/lessons'
+      preLoaderRoute: typeof LessonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/suralar': {
+      id: '/suralar'
+      path: '/suralar'
+      fullPath: '/suralar'
+      preLoaderRoute: typeof SuralarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tests': {
+      id: '/tests'
+      path: '/tests'
+      fullPath: '/tests'
+      preLoaderRoute: typeof TestsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lessons/': {
+      id: '/lessons/'
+      path: '/'
+      fullPath: '/lessons/'
+      preLoaderRoute: typeof LessonsIndexRouteImport
+      parentRoute: typeof LessonsRoute
+    }
+    '/lessons/$lessonId': {
+      id: '/lessons/$lessonId'
+      path: '/$lessonId'
+      fullPath: '/lessons/$lessonId'
+      preLoaderRoute: typeof LessonsLessonIdRouteImport
+      parentRoute: typeof LessonsRoute
+    }
   }
 }
 
+interface LessonsRouteChildren {
+  LessonsLessonIdRoute: typeof LessonsLessonIdRoute
+  LessonsIndexRoute: typeof LessonsIndexRoute
+}
+
+const LessonsRouteChildren: LessonsRouteChildren = {
+  LessonsLessonIdRoute: LessonsLessonIdRoute,
+  LessonsIndexRoute: LessonsIndexRoute,
+}
+
+const LessonsRouteWithChildren =
+  LessonsRoute._addFileChildren(LessonsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LessonsRoute: LessonsRouteWithChildren,
+  SettingsRoute: SettingsRoute,
+  SuralarRoute: SuralarRoute,
+  TestsRoute: TestsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

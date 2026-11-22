@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Keep textbook content in the browser-safe learning-content module with PDF references and explicit verified/review status; unverified examples must not render as lessons.
+- Use the shared learning provider for the initial session-only experience; do not imply persistent storage or a working editorial submission service before Cloud is configured.
+- Keep the four primary sections as TanStack routes with a shared shell, and all reading typography and zoom sizes in global design tokens for consistent Arabic rendering.
