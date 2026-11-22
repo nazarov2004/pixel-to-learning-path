@@ -766,16 +766,6 @@ export function TestsPage() {
                 </Button>
               ))}
             </div>
-            {revealed && (
-              <div
-                className={"answer-feedback " + (chosen === question.answer ? "right" : "wrong")}
-              >
-                {chosen === question.answer
-                  ? "To‘g‘ri javob!"
-                  : "Javob noto‘g‘ri. To‘g‘ri javob belgilandi."}
-                <small>Manba: PDF {question.page}-sahifa</small>
-              </div>
-            )}
             <Button
               disabled={chosen === null}
               onClick={() => (revealed ? advance() : setRevealed(true))}
