@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -593,6 +593,39 @@ export function TestsPage() {
   const [chosen, setChosen] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [finished, setFinished] = useState(false);
+  const quizRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!active || finished) return;
+    const previousFocus = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    quizRef.current?.focus();
+    function handleKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setActive(false);
+      if (event.key !== "Tab") return;
+      const controls =
+        quizRef.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)");
+      const first = controls?.[0];
+      const last = controls?.[controls.length - 1];
+      if (!first || !last) return;
+      if (
+        event.shiftKey &&
+        (document.activeElement === first || document.activeElement === quizRef.current)
+      ) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKey);
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    };
+  }, [active, finished]);
   const question = questions[answers.length];
   function start() {
     setAnswers([]);
@@ -684,7 +717,14 @@ export function TestsPage() {
           </div>
         </section>
       ) : question ? (
-        <section className="quiz-panel">
+        <section
+          className="quiz-panel"
+          ref={quizRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="quiz-question"
+          tabIndex={-1}
+        >
           <div className="quiz-top">
             <span>
               {answers.length + 1} / {questions.length} SAVOL
@@ -701,49 +741,52 @@ export function TestsPage() {
           <div className="progress-track">
             <div style={{ width: `${(answers.length / questions.length) * 100}%` }} />
           </div>
-          <h2>{question.prompt}</h2>
-          <div className="quiz-options">
-            {question.options.map((option, i) => (
-              <Button
-                key={i}
-                variant="outline"
-                disabled={revealed}
-                className={
-                  "quiz-option " +
-                  (chosen === i ? "chosen " : "") +
-                  (revealed && i === question.answer
-                    ? "correct"
-                    : revealed && i === chosen
-                      ? "incorrect"
-                      : "")
-                }
-                onClick={() => setChosen(i)}
-                lang="ar"
-                dir="rtl"
-              >
-                {option}
-              </Button>
-            ))}
-          </div>
-          {revealed && (
-            <div className={"answer-feedback " + (chosen === question.answer ? "right" : "wrong")}>
-              {chosen === question.answer
-                ? "To‘g‘ri javob!"
-                : "Javob noto‘g‘ri. To‘g‘ri javob belgilandi."}
-              <small>Manba: PDF {question.page}-sahifa</small>
+          <div className="quiz-content">
+            <h2 id="quiz-question">{question.prompt}</h2>
+            <div className="quiz-options">
+              {question.options.map((option, i) => (
+                <Button
+                  key={i}
+                  variant="outline"
+                  disabled={revealed}
+                  className={
+                    "quiz-option " +
+                    (chosen === i ? "chosen " : "") +
+                    (revealed && i === question.answer
+                      ? "correct"
+                      : revealed && i === chosen
+                        ? "incorrect"
+                        : "")
+                  }
+                  onClick={() => setChosen(i)}
+                  lang="ar"
+                  dir="rtl"
+                >
+                  {option}
+                </Button>
+              ))}
             </div>
-          )}
-          <Button
-            disabled={chosen === null}
-            onClick={() => (revealed ? advance() : setRevealed(true))}
-          >
-            {revealed
-              ? answers.length === questions.length - 1
-                ? "Natijani ko‘rish"
-                : "Keyingi savol"
-              : "Javobni tekshirish"}{" "}
-            <ArrowRight />
-          </Button>
+            {revealed && (
+              <div
+                className={"answer-feedback " + (chosen === question.answer ? "right" : "wrong")}
+              >
+                {chosen === question.answer
+                  ? "To‘g‘ri javob!"
+                  : "Javob noto‘g‘ri. To‘g‘ri javob belgilandi."}
+                <small>Manba: PDF {question.page}-sahifa</small>
+              </div>
+            )}
+            <Button
+              disabled={chosen === null}
+              onClick={() => (revealed ? advance() : setRevealed(true))}
+            >
+              {revealed
+                ? answers.length === questions.length - 1
+                  ? "Natijani ko‘rish"
+                  : "Keyingi savol"
+                : "Tekshirish"}
+            </Button>
+          </div>
         </section>
       ) : null}
     </main>
