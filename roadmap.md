@@ -1,4 +1,5 @@
 # Muallimi Soniy
+- [ ] Remove the Audio and account/data sections from Settings
 - [x] Design system and four main pages
 - [x] Interactive verified sample lessons, uniform zoom and correction draft
 - [x] Verified sample tests and display settings

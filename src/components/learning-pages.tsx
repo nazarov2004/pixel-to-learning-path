@@ -19,8 +19,6 @@ import {
   Trophy,
   TrendingUp,
   X,
-  Volume2,
-  UserRound,
   Sun,
   Moon,
   Monitor,
@@ -865,49 +863,6 @@ export function SettingsPage() {
               {state.theme === t.id && <Check />}
             </Button>
           ))}
-        </div>
-      </section>
-      <section className="settings-section">
-        <div>
-          <h2>Audio</h2>
-          <p>Talaffuz va tinglash</p>
-        </div>
-        <div className="settings-body">
-          <div className="setting-row">
-            <div>
-              <strong>
-                <Volume2 size={17} /> Audio manbalari
-              </strong>
-              <p>Hozircha audio fayllar ulanmagan.</p>
-            </div>
-            <span className="tiny-badge">Tez kunda</span>
-          </div>
-          <Button asChild variant="outline">
-            <Link to="/suralar">
-              <Headphones /> Suralar
-            </Link>
-          </Button>
-        </div>
-      </section>
-      <section className="settings-section">
-        <div>
-          <h2>Hisob va ma’lumotlar</h2>
-          <p>Shaxsiy o‘quv natijalaringiz</p>
-        </div>
-        <div className="settings-body">
-          <div className="account-empty">
-            <UserRound size={28} />
-            <div>
-              <strong>Mehmon rejimi</strong>
-              <p>
-                Natijalar, sozlamalar va tuzatish qoralamalari faqat joriy sessiyada saqlanadi.
-                Hisob xizmati hali ulanmagan.
-              </p>
-            </div>
-          </div>
-          {state.reports.length > 0 && (
-            <p>{state.reports.length} ta tuzatish qoralamasi · Pending</p>
-          )}
         </div>
       </section>
     </main>
