@@ -20,8 +20,8 @@ type LearningState = {
   setSpacious: (v: boolean) => void;
   reports: Correction[];
   report: (r: Correction) => void;
-  history: { score: number; total: number }[];
-  addResult: (score: number, total: number) => void;
+  completedTests: number;
+  finishTest: () => void;
 };
 const LearningContext = createContext<LearningState | null>(null);
 export function LearningProvider({ children }: { children: ReactNode }) {
@@ -31,7 +31,7 @@ export function LearningProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState("light");
   const [spacious, setSpacious] = useState(true);
   const [reports, setReports] = useState<Correction[]>([]);
-  const [history, setHistory] = useState<{ score: number; total: number }[]>([]);
+  const [completedTests, setCompletedTests] = useState(0);
   return (
     <LearningContext.Provider
       value={{
@@ -47,8 +47,8 @@ export function LearningProvider({ children }: { children: ReactNode }) {
         setSpacious,
         reports,
         report: (r) => setReports((v) => [...v, r]),
-        history,
-        addResult: (score, total) => setHistory((v) => [{ score, total }, ...v]),
+        completedTests,
+        finishTest: () => setCompletedTests((v) => v + 1),
       }}
     >
       <div data-theme={theme}>{children}</div>

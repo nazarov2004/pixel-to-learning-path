@@ -92,7 +92,7 @@ export function HomePage() {
         <Stat
           icon={ListChecks}
           label="Bajarilgan testlar"
-          value={String(state.history.length).padStart(2, "0")}
+          value={String(state.completedTests).padStart(2, "0")}
           detail="O‘zingizni sinab ko‘ring"
           tone="coral"
         />
@@ -608,7 +608,7 @@ export function TestsPage() {
     setChosen(null);
     setRevealed(false);
     if (updated.length === questions.length) {
-      state.addResult(scoreAnswers(updated), questions.length);
+      state.finishTest();
       setFinished(true);
     }
   }
@@ -746,32 +746,6 @@ export function TestsPage() {
           </Button>
         </section>
       ) : null}
-      <section className="test-history">
-        <SectionHeading title="Testlar tarixi" />
-        {state.history.length ? (
-          state.history.map((r, i) => (
-            <div className="history-row" key={i}>
-              <span className="stat-icon blue">
-                <ListChecks size={19} />
-              </span>
-              <div>
-                <h3>Arab alifbosi va harakatlar</h3>
-                <p>Joriy sessiya · {i + 1}-natija</p>
-              </div>
-              <strong>
-                {r.score}/{r.total}
-              </strong>
-              <span className="tiny-badge">{Math.round((r.score / r.total) * 100)}%</span>
-            </div>
-          ))
-        ) : (
-          <div className="history-empty">
-            <Clock3 size={23} />
-            <p>Hali test topshirilmadi</p>
-            <small>Birinchi natijangiz shu yerda ko‘rinadi.</small>
-          </div>
-        )}
-      </section>
     </main>
   );
 }
